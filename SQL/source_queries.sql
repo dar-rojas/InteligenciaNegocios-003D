@@ -47,3 +47,21 @@ select
 from ventas v
 	join empleados e on v.vendedor_id = e.empleado_id
 	join cargos c on c.cargo_id = e.cargo_id;
+
+--VENTAS_FACT
+use DWAlbarran;
+declare 
+@promedio_valor_ventas int,
+@max_valor_ventas int,
+@min_valor_ventas int
+
+select @promedio_valor_ventas = AVG(precio*cantidad), 
+	@max_valor_ventas = max(precio*cantidad), 
+	@min_valor_ventas = min(precio*cantidad) 
+from FACT_VENTA v join DProducto p on v.idProducto = p.idProducto;
+
+select precio * cantidad as total_venta,
+	@promedio_valor_ventas as promedio_valor_ventas,
+	@max_valor_ventas as max_valor_ventas,
+	@min_valor_ventas as min_valor_ventas
+from FACT_VENTA v join DProducto p on v.idProducto = p.idProducto;

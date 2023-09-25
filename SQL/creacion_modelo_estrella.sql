@@ -54,18 +54,16 @@ CREATE TABLE FACT_VENTA(
 idTiempo int,
 idUbicacion int,
 idProducto int,
-cliente_id int,
-empleado_id int,
+idCliente int,
+idEmpleado int,
 -- Dimensiones
 total_venta INT, -- valor total venta
-ingreso_sucursal_mes int, -- ingreso acumulado del mes
-total_vent_empleado_mes int, -- total de ventas por empleado al mes
-ventas_prod_mes int, -- total de ventas por producto en el mes
-ventas_categoria_mes int, -- total de ventas por categoria en el mes
-compras_cliente_mes int, -- total de compras acumuladas cliente en el mes
+promedio_valor_ventas int,
+max_valor_ventas int,
+min_valor_ventas INT,
 FOREIGN KEY (idTiempo) REFERENCES DTiempo(idTiempo),
 FOREIGN KEY (idUbicacion) REFERENCES DUbicacion(idUbicacion),
 FOREIGN KEY (idProducto) REFERENCES DProducto(idProducto),
-FOREIGN KEY (cliente_id) REFERENCES DCliente(idCliente),
-FOREIGN KEY (empleado_id) REFERENCES DEmpleado(idEmpleado)
+FOREIGN KEY (idCliente) REFERENCES DCliente(idCliente),
+FOREIGN KEY (idEmpleado) REFERENCES DEmpleado(idEmpleado)
 );
