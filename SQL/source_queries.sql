@@ -50,18 +50,47 @@ from ventas v
 
 --VENTAS_FACT
 use DWAlbarran;
-declare 
-@promedio_valor_ventas int,
-@max_valor_ventas int,
-@min_valor_ventas int
-
-select @promedio_valor_ventas = AVG(precio*cantidad), 
-	@max_valor_ventas = max(precio*cantidad), 
-	@min_valor_ventas = min(precio*cantidad) 
-from FACT_VENTA v join DProducto p on v.idProducto = p.idProducto;
-
-select precio * cantidad as total_venta,
-	@promedio_valor_ventas as promedio_valor_ventas,
-	@max_valor_ventas as max_valor_ventas,
-	@min_valor_ventas as min_valor_ventas
-from FACT_VENTA v join DProducto p on v.idProducto = p.idProducto;
+select 
+	idProducto,
+	precio * cantidad as total,
+	kdia.max_valor_ventas as max_valor_ventas_dia,
+	kdia.min_valor_ventas as min_valor_ventas_dia,
+	kdia.promedio_valor_ventas as promedio_valor_ventas_dia,
+	kmes.max_valor_ventas as max_valor_ventas_mes,
+	kmes.min_valor_ventas as min_valor_ventas_mes,
+	kmes.promedio_valor_ventas as promedio_valor_ventas_mes,
+	kanio.max_valor_ventas as max_valor_ventas_anio,
+	kanio.min_valor_ventas as min_valor_ventas_anio,
+	kanio.promedio_valor_ventas as promedio_valor_ventas_anio
+from
+	DProducto p join DTiempo t on p.idProducto = t.idTiempo
+	join (
+		select
+			t.dia as dia,
+			t.mes as mes,
+			t.anio as anio,
+			AVG(precio*cantidad) as promedio_valor_ventas, 
+			max(precio*cantidad) as max_valor_ventas, 
+			min(precio*cantidad) as min_valor_ventas
+		from DProducto p join DTiempo t on p.idProducto = t.idTiempo
+		group by t.dia, t.mes, t.anio
+	)kdia on t.anio = kdia.anio and t.mes = kdia.mes and t.dia = kdia.dia
+	join (
+		select
+			t.mes as mes,
+			t.anio as anio,
+			AVG(precio*cantidad) as promedio_valor_ventas, 
+			max(precio*cantidad) as max_valor_ventas, 
+			min(precio*cantidad) as min_valor_ventas
+		from DProducto p join DTiempo t on p.idProducto = t.idTiempo
+		group by t.mes, t.anio
+	) kmes on t.anio = kmes.anio and kmes.mes = t.mes
+	join (
+		select
+			t.anio as anio,
+			AVG(precio*cantidad) as promedio_valor_ventas, 
+			max(precio*cantidad) as max_valor_ventas, 
+			min(precio*cantidad) as min_valor_ventas
+		from DProducto p join DTiempo t on p.idProducto = t.idTiempo
+		group by t.anio
+	) kanio on t.anio = kanio.anio;
