@@ -2,7 +2,6 @@
 	Consultas para extraer datos que se insertarán en el modelo estrella
 */
 use Albarran;
-
 --DTiempo
 select 
 	YEAR(fecha) as anio,
@@ -32,7 +31,7 @@ from ventas v
 
 --DCliente
 select 
-	c.nombre + ' '  + c.appaterno + ' ' + c.apmaterno as nombre_completo,
+	UPPER(SUBSTRING(c.nombre + ' '  + c.appaterno + ' ' + c.apmaterno, 1, 255)) as nombre_completo,
 	c.sexo as sexo,
 	c.fecha_nacimiento as fecha_nacimiento,
 	c.estado_civil as estado_civil
@@ -40,7 +39,7 @@ from ventas v join clientes c on v.cliente_id = c.cliente_id;
 
 --DEmpleado
 select 
-	e.nombre + ' '  + e.appaterno + ' ' + e.apmaterno as nombre_completo,
+	UPPER(SUBSTRING(e.nombre + ' '  + e.appaterno + ' ' + e.apmaterno, 1, 255)) as nombre_completo,
 	e.fecha_contrato as fecha_contrato,
 	e.sueldo_base as sueldo_base,
 	c.nombre as cargo
